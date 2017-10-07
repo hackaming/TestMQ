@@ -32,8 +32,6 @@
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
         exchange="exchangeTest" />
         
-
-        
     <!-- 消息接收者 -->
     <bean id="messageReceiver" class="me.shijunjie.consumer.MessageConsumer"></bean>
 

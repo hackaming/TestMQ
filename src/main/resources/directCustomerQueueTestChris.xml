@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/rabbit  
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.2.xsd">
+    <!--配置connection-factory，指定连接rabbit server参数 -->
+    <rabbit:connection-factory id="connectionFactory" virtual-host="vhostSJJ" 
+        username="shijunjie" password="shijunjie123" host="192.168.0.104" port="5672" 
+        />
+    <!-- <rabbit:connection-factory id="connectionFactory"
+         username="test2" password="test2"
+        host="123.206.228.200" port="5672" /> -->
+
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+    <rabbit:admin id="connectAdmin" connection-factory="connectionFactory" />
+
+    <!--定义rabbit template用于数据的接收和发送 -->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+        exchange="exchangeTest" />
+
+    <!--定义queue -->
+    <rabbit:queue name="queueChris" durable="true"
+        auto-delete="false" exclusive="false" declared-by="connectAdmin" />
+
+    <!-- 定义direct exchange，绑定queueTest -->
+    <rabbit:direct-exchange name="exchangeTest"
+        durable="true" auto-delete="false" declared-by="connectAdmin">
+        <rabbit:bindings>
+            <rabbit:binding queue="queueChris" key="queueTestChris"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!-- 消息接收者 -->
+    <bean id="receiverChris" class="me.shijunjie.consumer.ChrisConsumer"></bean>
+
+</beans>  
